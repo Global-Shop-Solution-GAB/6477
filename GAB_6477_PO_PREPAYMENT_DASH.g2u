@@ -1,0 +1,662 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.F_PODash..Create(DashForm)
+Gui.F_PODash..Caption("PO Prepayment Dashboard (6477)")
+Gui.F_PODash..Size(1024,720)
+Gui.F_PODash..MinX(0)
+Gui.F_PODash..MinY(0)
+Gui.F_PODash..Position(0,0)
+Gui.F_PODash..AlwaysOnTop(False)
+Gui.F_PODash..FontName("Tahoma")
+Gui.F_PODash..FontSize(8.25)
+Gui.F_PODash..ControlBox(True)
+Gui.F_PODash..MaxButton(True)
+Gui.F_PODash..MinButton(True)
+Gui.F_PODash..MousePointer(0)
+Gui.F_PODash..Moveable(True)
+Gui.F_PODash..Sizeable(True)
+Gui.F_PODash..ShowInTaskBar(True)
+Gui.F_PODash..TitleBar(True)
+Gui.F_PODash..BarExportButton(True)
+Gui.F_PODash..BarRefreshButton(True)
+Gui.F_PODash..Event(UnLoad,Unload)
+Gui.F_PODash..Event(RefreshClick,LoadData)
+Gui.F_PODash..Event(ExportClick,MenuClickExport)
+Gui.F_PODash.GsGC_PO.Create(GsGridControl)
+Gui.F_PODash.GsGC_PO.Enabled(True)
+Gui.F_PODash.GsGC_PO.Visible(True)
+Gui.F_PODash.GsGC_PO.Zorder(0)
+Gui.F_PODash.GsGC_PO.Size(1008,602)
+Gui.F_PODash.GsGC_PO.Position(3,39)
+Gui.F_PODash.GsGC_PO.Event(RowCellClick,gsgc_PO_RowCellClick)
+Gui.F_PODash.dtpBegDate.Create(DatePicker)
+Gui.F_PODash.dtpBegDate.Enabled(True)
+Gui.F_PODash.dtpBegDate.Visible(True)
+Gui.F_PODash.dtpBegDate.Zorder(0)
+Gui.F_PODash.dtpBegDate.Size(100,20)
+Gui.F_PODash.dtpBegDate.Position(70,10)
+Gui.F_PODash.dtpBegDate.CheckBox(False)
+Gui.F_PODash.dtpBegDate.FontName("Tahoma")
+Gui.F_PODash.dtpBegDate.FontSize(8.25)
+Gui.F_PODash.dtpBegDate.ForeColor(-2147483640)
+Gui.F_PODash.lbl1.Create(Label,"Beg. Date",True,48,13,0,10,13,True,0,"Tahoma",8.25,,0,0)
+Gui.F_PODash.lbl1.BorderStyle(0)
+Gui.F_PODash.lbl2.Create(Label,"End. Date",True,48,13,0,185,13,True,0,"Tahoma",8.25,,0,0)
+Gui.F_PODash.lbl2.BorderStyle(0)
+Gui.F_PODash.dtpEndDate.Create(DatePicker)
+Gui.F_PODash.dtpEndDate.Enabled(True)
+Gui.F_PODash.dtpEndDate.Visible(True)
+Gui.F_PODash.dtpEndDate.Zorder(0)
+Gui.F_PODash.dtpEndDate.Size(100,20)
+Gui.F_PODash.dtpEndDate.Position(240,9)
+Gui.F_PODash.dtpEndDate.CheckBox(False)
+Gui.F_PODash.dtpEndDate.FontName("Tahoma")
+Gui.F_PODash.dtpEndDate.FontSize(8.25)
+Gui.F_PODash.dtpEndDate.ForeColor(-2147483640)
+Gui.F_SPLIT..Create(BaseForm)
+Gui.F_SPLIT..Caption("Split Prepayment")
+Gui.F_SPLIT..Size(1024,232)
+Gui.F_SPLIT..MinX(0)
+Gui.F_SPLIT..MinY(0)
+Gui.F_SPLIT..Position(0,0)
+Gui.F_SPLIT..AlwaysOnTop(False)
+Gui.F_SPLIT..FontName("Tahoma")
+Gui.F_SPLIT..FontSize(8.25)
+Gui.F_SPLIT..ControlBox(True)
+Gui.F_SPLIT..MaxButton(True)
+Gui.F_SPLIT..MinButton(True)
+Gui.F_SPLIT..MousePointer(0)
+Gui.F_SPLIT..Moveable(True)
+Gui.F_SPLIT..Sizeable(True)
+Gui.F_SPLIT..ShowInTaskBar(True)
+Gui.F_SPLIT..TitleBar(True)
+Gui.F_SPLIT..Event(UnLoad,F_SPLIT_UnLoad)
+Gui.F_SPLIT.GsGridControl1.Create(GsGridControl)
+Gui.F_SPLIT.GsGridControl1.Enabled(True)
+Gui.F_SPLIT.GsGridControl1.Visible(True)
+Gui.F_SPLIT.GsGridControl1.Zorder(0)
+Gui.F_SPLIT.GsGridControl1.Size(985,129)
+Gui.F_SPLIT.GsGridControl1.Position(16,60)
+Gui.F_SPLIT.GsGridControl1.Event(CellValueChanged,GsGC_CellValueChanged)
+Gui.F_SPLIT.GsGridControl1.Event(RowCellClick,gsgc_RowCellClick)
+Gui.F_SPLIT.frm_Split.Create(Frame)
+Gui.F_SPLIT.frm_Split.Enabled(True)
+Gui.F_SPLIT.frm_Split.Visible(True)
+Gui.F_SPLIT.frm_Split.Zorder(0)
+Gui.F_SPLIT.frm_Split.Size(855,35)
+Gui.F_SPLIT.frm_Split.Position(19,13)
+Gui.F_SPLIT.frm_Split.Caption("")
+Gui.F_SPLIT.frm_Split.FontName("Tahoma")
+Gui.F_SPLIT.frm_Split.FontSize(8.25)
+Gui.F_SPLIT.lblTitle.Create(Label,"",True,1,13,0,23,14,True,0,"Tahoma",8.25,,0,0)
+Gui.F_SPLIT.lblTitle.BorderStyle(0)
+Gui.F_SPLIT.lblTitle.Parent("frm_Split")
+Gui.F_SPLIT.lblTitle.FontStyle(True,False,False,False,False)
+Gui.F_SPLIT.cmdSave.Create(Button)
+Gui.F_SPLIT.cmdSave.Enabled(True)
+Gui.F_SPLIT.cmdSave.Visible(True)
+Gui.F_SPLIT.cmdSave.Zorder(0)
+Gui.F_SPLIT.cmdSave.Size(102,31)
+Gui.F_SPLIT.cmdSave.Position(899,15)
+Gui.F_SPLIT.cmdSave.Caption("SAVE")
+Gui.F_SPLIT.cmdSave.FontName("Tahoma")
+Gui.F_SPLIT.cmdSave.FontSize(8.25)
+Gui.F_SPLIT.cmdSave.Event(Click,cmdSave_Click)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+V.Global.sPO.Declare
+V.Global.sRecv.Declare
+V.Global.sInv.Declare
+V.Global.fCost.Declare
+V.Global.sCustCurr.Declare
+V.Global.sCoCurr.Declare
+V.Global.sVendor.Declare
+V.Global.sInvoice.Declare
+V.Global.fFinalCost.Declare
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+V.Local.sSqL.Declare
+V.Local.bExist.Declare
+
+F.ODBC.Connection!conx.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass,10000)
+
+'Check if custom table exists
+F.ODBC.Connection!conx.TableExists("GAB_6477_ACCT",V.Local.bExist)
+F.Intrinsic.Control.If(V.Local.bExist,=,False)
+	F.Intrinsic.UI.Msgbox("Please setup the prepayment account first on Purchasing > Admin > Prepayment Account Setup (6477)"."PO Prepayment (6477)")
+	F.ODBC.Connection!conx.Close
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.CallSub(SetAnchors)
+F.Intrinsic.Control.CallSub(LoadData)
+
+Program.Sub.Main.End
+
+Program.Sub.SetAnchors.Start
+	F.Intrinsic.Control.Try
+	V.Local.sError.Declare
+	
+	'0 - None
+	'1 - Top
+	'2 - Bottom
+	'4 - Left
+	'8 - Right
+
+	Gui.F_PODash.GsGC_PO.Anchor(15)
+	
+	F.Intrinsic.Control.Catch
+		F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.End 
+	F.Intrinsic.Control.EndTry
+Program.Sub.SetAnchors.End
+
+Program.Sub.LoadData.Start
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+V.Local.sSqL.Declare
+V.Local.dBegDate.Declare
+V.Local.dEndDate.Declare
+
+F.Intrinsic.Control.If(V.DataTable.dtPORecv.Exists,=,True)
+	F.Data.DataTable.Close("dtPORecv")
+F.Intrinsic.Control.EndIf
+
+V.Local.dBegDate.Set(V.Screen.F_PODash!dtpBegDate.Value)
+V.Local.dEndDate.Set(V.Screen.F_PODash!dtpEndDate.Value)
+
+f.ODBC.Connection!conx.OpenLocalRecordsetRO("rst","Select Currency from V_Company_Opt")
+V.Global.sCoCurr.Set(v.ODBC.conx!rst.FieldValTrim!CURRENCY)
+f.ODBC.conx!rst.Close
+
+F.Intrinsic.String.Build("Select rtrim(vendor)+receiver_no+purchase_order as VRP, Vendor, '' as Vendor_Name, Receiver_No, Purchase_Order, IF(INV.Invoice<>'',INV.Invoice,POR.Pack_List) As Invoice, Date_Received, Time_Transaction, If(Exchange_Currency<>'',Exchange_Currency,'{2}') as Exchange_Currency, Exch_Ext_Cost, Extended_Cost, Qty_Invoiced, Cost_Invoiced, '' as Reversed_invoice, Convert('1900-01-01',SQL_Date) as InvoicedPostDate, '' as Split, '' as DelSplit From V_PO_Receiver POR left join (Select A.VRP, A.Invoice from (Select Batch_Num, rtrim(vendor)+receiver+purchase_order as VRP, Receiver, Invoice From V_AP_Open_Items Union All Select Batch_Num, rtrim(vendor)+receiver+purchase_order, Receiver, Invoice From V_AP_Hist) A where right(A.Receiver,1) = 'D' and Left(A.Batch_Num,1) = 'A') INV on rtrim(POR.vendor)+POR.receiver_no+POR.purchase_order = INV.VRP Where Right(Receiver_No,1) = 'D' and Date_Received Between '{0}' and '{1}'",V.Local.dBegDate.PervasiveDate, V.Local.dEndDate.PervasiveDate, V.Global.sCoCurr, V.Local.sSqL)
+F.Data.DataTable.CreateFromSQL("dtPORecv","conx",V.Local.sSqL,True)
+
+'F.Data.Dictionary.CreateFromSQL("dInvoice","conx","Select A.VRP, A.Invoice from (Select Batch_Num, rtrim(vendor)+receiver+purchase_order as VRP, Receiver, Invoice From V_AP_Open_Items Union All Select Batch_Num, rtrim(vendor)+receiver+purchase_order, Receiver, Invoice From V_AP_Hist) A where right(A.Receiver,1) = 'D' and Left(A.Batch_Num,1) = 'A';")
+'F.Data.Dictionary.SetDefaultReturn("dInvoice","")
+'F.Data.DataTable.FillFromDictionary("dtPORecv","dInvoice","VRP","Invoice")
+'F.Data.Dictionary.Close("dInvoice")
+
+'Fill Reversed_Invoice from Dictionary
+F.Data.Dictionary.CreateFromSQL("dInvoice","conx","Select rtrim(vendor)+receiver+po_num as VRP, invoice_no From V_GL_AP_Detail Where AP_Code = '10' and Left(Batch,1) = 'P' and Right(Receiver,1) = 'D';")
+F.Data.Dictionary.SetDefaultReturn("dInvoice","")
+F.Data.DataTable.FillFromDictionary("dtPORecv","dInvoice","VRP","Reversed_Invoice")
+F.Data.Dictionary.Close("dInvoice")
+
+'Fill InvoicedPostDate from Dictionary
+F.Data.Dictionary.CreateFromSQL("dInvoice","conx","Select rtrim(vendor)+receiver+po_num as VRP, post_date_sql From V_GL_AP_Detail Where AP_Code = '10' and Left(Batch,1) = 'P' and Right(Receiver,1) = 'D';")
+F.Data.Dictionary.SetDefaultReturn("dInvoice","1900-01-01")
+F.Data.DataTable.FillFromDictionary("dtPORecv","dInvoice","VRP","InvoicedPostDate")
+F.Data.Dictionary.Close("dInvoice")
+
+'Fill Vendor_Name from Dictionary
+F.Data.Dictionary.CreateFromSQL("dic","conx","Select Vendor, Name_Vendor From V_Vendor_Master;")
+F.Data.Dictionary.SetDefaultReturn("dic","")
+F.Data.DataTable.FillFromDictionary("dtPORecv","dic","Vendor","Vendor_Name")
+F.Data.Dictionary.Close("dic")
+
+Gui.F_PODash.GsGC_PO.AddGridviewFromDatatable("gvPORecv","dtPORecv")
+
+Gui.F_PODash.GsGC_PO.SuspendLayout()
+Gui.F_PODash.GsGC_PO.SetGridViewProperty("gvPORecv","MultiSelect",True)
+Gui.F_PODash.GsGC_PO.SetGridViewProperty("gvPORecv","AllowSort",True)
+Gui.F_PODash.GsGC_PO.SetGridViewProperty("gvPORecv","AllowFilter",True)
+Gui.F_PODash.GsGC_PO.SetGridViewProperty("gvPORecv","ShowGroupPanel",True)
+Gui.F_PODash.GsGC_PO.SetGridViewProperty("gvPORecv","EnableAppearanceOddRow",True)
+Gui.F_PODash.GsGC_PO.SetGridViewProperty("gvPORecv","OptionsViewColumnAutoWidth",True)
+
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","VRP","Visible",False)
+'Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Reversed_Invoice","Visible",False)
+
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Vendor_Name","Caption","Vendor Name")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Receiver_No","Caption","Receiver")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Purchase_Order","Caption","PO")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Date_Received","Caption","Invoice Date")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Time_Transaction","Caption","Time")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Exchange_Currency","Caption","Curr.")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Exch_Ext_Cost","Caption","Forex Total Cost")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Extended_Cost","Caption","Base Total Cost")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Qty_Invoiced","Caption","Invoiced Qty")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Cost_Invoiced","Caption","Invoiced Cost")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Reversed_Invoice","Caption","Reversed Invoice")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","InvoicedPostDate","Caption","Invoiced Post Date")
+	
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Vendor_Name","AllowEdit",False)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Receiver_No","AllowEdit",False)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Vendor","AllowEdit",False)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Purchase_Order","AllowEdit",False)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Invoice","AllowEdit",False)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Date_Received","AllowEdit",False)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Time_Transaction","AllowEdit",False)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Exchange_Currency","AllowEdit",False)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Exch_Ext_Cost","AllowEdit",False)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Extended_Cost","AllowEdit",False)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Qty_Invoiced","AllowEdit",False)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Cost_Invoiced","AllowEdit",False)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Reversed_Invoice","AllowEdit",False)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","InvoicedPostDate","AllowEdit",False)
+
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Vendor_Name","ReadOnly",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Receiver_No","ReadOnly",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Vendor","ReadOnly",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Purchase_Order","ReadOnly",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Invoice","ReadOnly",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Date_Received","ReadOnly",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Time_Transaction","ReadOnly",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Exchange_Currency","ReadOnly",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Exch_Ext_Cost","ReadOnly",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Extended_Cost","ReadOnly",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Qty_Invoiced","ReadOnly",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Cost_Invoiced","ReadOnly",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","InvoicedPostDate","ReadOnly",True)
+
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Vendor_Name","MinWidth","200")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Receiver_No","MinWidth","100")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Vendor","MinWidth","100")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Purchase_Order","MinWidth","100")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Invoice","MinWidth","100")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Date_Received","MinWidth","100")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Time_Transaction","MinWidth","100")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Exchange_Currency","MinWidth","100")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Exch_Ext_Cost","MinWidth","100")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Extended_Cost","MinWidth","100")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Qty_Invoiced","MinWidth","100")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Cost_Invoiced","MinWidth","100")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Reversed_Invoice","MinWidth","100")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","InvoicedPostDate","MinWidth","100")
+
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Vendor_Name","HeaderFontBold",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Receiver_No","HeaderFontBold",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Vendor","HeaderFontBold",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Purchase_Order","HeaderFontBold",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Invoice","HeaderFontBold",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Date_Received","HeaderFontBold",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Time_Transaction","HeaderFontBold",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Exchange_Currency","HeaderFontBold",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Exch_Ext_Cost","HeaderFontBold",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Extended_Cost","HeaderFontBold",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Qty_Invoiced","HeaderFontBold",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Cost_Invoiced","HeaderFontBold",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Reversed_Invoice","HeaderFontBold",True)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","InvoicedPostDate","HeaderFontBold",True)
+
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Vendor_Name","HeaderHAlignment","Center")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Receiver_No","HeaderHAlignment","Center")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Vendor","HeaderHAlignment","Center")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Purchase_Order","HeaderHAlignment","Center")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Invoice","HeaderHAlignment","Center")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Date_Received","HeaderHAlignment","Center")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Time_Transaction","HeaderHAlignment","Center")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Exchange_Currency","HeaderHAlignment","Center")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Exch_Ext_Cost","HeaderHAlignment","Center")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Extended_Cost","HeaderHAlignment","Center")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Qty_Invoiced","HeaderHAlignment","Center")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Cost_Invoiced","HeaderHAlignment","Center")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Reversed_Invoice","HeaderHAlignment","Center")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","InvoicedPostDate","HeaderHAlignment","Center")
+
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Exch_Ext_Cost","DisplayCustomNumeric","#,###,##0.00####")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Extended_Cost","DisplayCustomNumeric","#,###,##0.00####")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Qty_Invoiced","DisplayCustomNumeric","#,###,##0")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Cost_Invoiced","DisplayCustomNumeric","#,###,##0.00####")
+
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Date_Received","DisplayCustomDatetime","d")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","InvoicedPostDate","DisplayCustomDatetime","d")
+	
+Gui.F_PODash.GsGC_PO.AddSummaryItem("gvPORecv","Exch_Ext_Cost","","Sum","","","n")
+Gui.F_PODash.GsGC_PO.AddSummaryItem("gvPORecv","Extended_Cost","","Sum","","","n")
+Gui.F_PODash.GsGC_PO.AddSummaryItem("gvPORecv","Qty_Invoiced","","Sum","","","n")
+Gui.F_PODash.GsGC_PO.AddSummaryItem("gvPORecv","Cost_Invoiced","","Sum","","","n")
+
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Split","ShowCaption",False)
+Gui.F_PODash.GsGC_PO.ColumnEdit("gvPORecv","Split","EditorButton","Split")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Split","AllowEdit",False)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","Split","MinWidth","80")
+
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","DelSplit","ShowCaption",False)
+Gui.F_PODash.GsGC_PO.ColumnEdit("gvPORecv","DelSplit","EditorButton","Delete Split")
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","DelSplit","AllowEdit",False)
+Gui.F_PODash.GsGC_PO.SetColumnProperty("gvPORecv","DelSplit","MinWidth","80")
+	
+Gui.F_PODash.GsGC_PO.ResumeLayout()
+Gui.F_PODash.GsGC_PO.MainView("gvPORecv")
+
+Gui.F_PODash..Show
+
+Program.Sub.LoadData.End
+
+Program.Sub.MenuClickExport.Start
+	F.Intrinsic.Control.Try
+	V.Local.sError.Declare
+
+	V.Local.sFileExport.Declare
+	V.Local.bExcel.Declare
+	V.Local.bFileLocked.Declare
+	V.Local.sMsg.Declare
+	V.Local.sControl.Declare
+
+		F.Automation.MSExcel.CheckPresence(V.Local.bExcel)
+		F.Intrinsic.Control.If(V.Local.bExcel)
+			F.Intrinsic.String.Build("{0}\GAB_6477_PO_Prepayment_{1}_Export.xlsx",V.Caller.LocalGssTempDir,V.Local.sControl,V.Local.sFileExport)
+			F.Intrinsic.File.IsFileLocked(V.Local.sFileExport,V.Local.bFileLocked)
+			F.Intrinsic.Control.If(V.Local.bFileLocked)
+				F.Intrinsic.String.Build("File is already open. Please close and export again.{0}File: {1}",V.Ambient.NewLine,V.Local.sFileExport,V.Local.sMsg)
+				F.Intrinsic.UI.Msgbox(V.Local.sMsg,"File In Use")
+			F.Intrinsic.Control.Else
+				Gui.F_PODash.GsGC_PO.Export(V.Local.sFileExport,"xlsx")
+				F.Intrinsic.Task.ShellExec(0,"",V.Local.sFileExport,"","",1)
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.Else
+			F.Intrinsic.String.Build("{0}\GAB_6477_PO_Prepayment.csv",V.Caller.LocalGssTempDir,V.Local.sControl,V.Local.sFileExport)
+			F.Intrinsic.File.IsFileLocked(V.Local.sFileExport,V.Local.bFileLocked)
+			F.Intrinsic.Control.If(V.Local.bFileLocked)
+				F.Intrinsic.String.Build("File is already open. Please close and export again.{0}File: {1}",V.Ambient.NewLine,V.Local.sFileExport,V.Local.sMsg)
+				F.Intrinsic.UI.Msgbox(V.Local.sMsg,"File In Use")
+			F.Intrinsic.Control.Else
+				Gui.F_PODash.GsGC_PO.Export(V.Local.sFileExport,"csv")
+			F.Intrinsic.Control.EndIf
+			F.Intrinsic.Task.ShellExec(0,"",V.Local.sFileExport,"","",1)
+		F.Intrinsic.Control.EndIf
+
+	F.Intrinsic.Control.Catch
+		F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		F.Intrinsic.Control.End 
+	F.Intrinsic.Control.EndTry
+Program.Sub.MenuClickExport.End
+
+Program.Sub.gsgc_PO_RowCellClick.Start
+	F.Intrinsic.Control.Try
+	V.Local.sError.Declare
+	V.Local.sTitle.Declare
+	V.Local.fInvoiced.Declare
+	V.Local.sSQL.Declare
+	V.Local.fAmt.Declare
+	V.Local.fForexAmt.Declare
+	V.Local.iRet.Declare
+	V.Local.sChangeDate.Declare
+	V.Local.sTransTime.Declare
+	
+	F.Intrinsic.Control.SelectCase(v.Args.Column)
+		F.Intrinsic.Control.CaseAny("Split","SPLIT")
+		
+			Gui.F_PODash.GsGC_PO.GetCellValueByColumnName("gvPORecv","Cost_Invoiced",V.Args.RowIndex,V.Local.fInvoiced)
+			
+			F.Intrinsic.Control.If(V.Local.fInvoiced,=,0)
+				
+				Gui.F_PODash.GsGC_PO.GetCellValueByColumnName("gvPORecv","Vendor",V.Args.RowIndex,V.Global.sVendor)
+				Gui.F_PODash.GsGC_PO.GetCellValueByColumnName("gvPORecv","PURCHASE_ORDER",V.Args.RowIndex,V.Global.sPO)
+				Gui.F_PODash.GsGC_PO.GetCellValueByColumnName("gvPORecv","Receiver_No",V.Args.RowIndex,V.Global.sRecv)
+				Gui.F_PODash.GsGC_PO.GetCellValueByColumnName("gvPORecv","Invoice",V.Args.RowIndex,V.Global.sInv)
+				Gui.F_PODash.GsGC_PO.GetCellValueByColumnName("gvPORecv","Exchange_Currency",V.Args.RowIndex,V.Global.sCustCurr)
+				Gui.F_PODash.GsGC_PO.GetCellValueByColumnName("gvPORecv","Invoice",V.Args.RowIndex,V.Global.sInvoice)
+				
+				F.Intrinsic.Control.If(V.Global.sCustCurr.Trim,<>,V.Global.sCoCurr)
+					Gui.F_PODash.GsGC_PO.GetCellValueByColumnName("gvPORecv","Exch_Ext_Cost",V.Args.RowIndex,V.Global.fCost)
+				F.Intrinsic.Control.Else
+					Gui.F_PODash.GsGC_PO.GetCellValueByColumnName("gvPORecv","Extended_Cost",V.Args.RowIndex,V.Global.fCost)
+				F.Intrinsic.Control.EndIf
+				
+				F.Intrinsic.Math.Mult(V.Global.fCost.Trim,-1,V.Global.fCost.Trim)
+				
+				F.Intrinsic.String.Build("Receiver #{0}			 PO #{1}			Invoice #{2}			Invoice amount {3} {4}", V.Global.sRecv.Trim, V.Global.sPO.Trim, V.Global.sInv.Trim, V.Global.sCustCurr, V.Global.fCost.Trim, V.Local.sTitle)
+				Gui.F_SPLIT.lblTitle.Caption(V.Local.sTitle)
+				
+				F.Intrinsic.Control.If(V.DataTable.dtSplit.Exists,=,True)
+					F.Data.DataTable.Close("dtSplit")
+				F.Intrinsic.Control.EndIf
+				
+				F.Data.DataTable.Create("dtSplit",true)
+				F.Data.DataTable.AddColumn("dtSplit","No","Long")
+				F.Data.DataTable.AddColumn("dtSplit","Amount","Float")
+				F.Data.DataTable.AddColumn("dtSplit","Add","String")
+				F.Data.DataTable.AddRow("dtSplit","No",1,"Amount",0)
+				
+				Gui.F_SPLIT.GsGridControl1.AddGridviewFromDatatable("gvSplit","dtSplit")
+				
+				Gui.F_SPLIT.GsGridControl1.SetColumnProperty("gvSplit","Amount","ReadOnly",False)
+				Gui.F_SPLIT.GsGridControl1.SetColumnProperty("gvSplit","Amount","AllowEdit",True)
+				Gui.F_SPLIT.GsGridControl1.SetColumnProperty("gvSplit","Amount","HeaderFontBold",True)
+				Gui.F_SPLIT.GsGridControl1.SetColumnProperty("gvSplit","Amount","HeaderHAlignment","Center")
+				F.Intrinsic.String.Build("Amount ({0})",V.Global.sCustCurr,V.Local.sTitle)
+				Gui.F_SPLIT.GsGridControl1.SetColumnProperty("gvSplit","Amount","Caption",V.Local.sTitle)
+				
+				Gui.F_SPLIT.GsGridControl1.SetColumnProperty("gvSplit","No","HeaderFontBold",True)
+				Gui.F_SPLIT.GsGridControl1.SetColumnProperty("gvSplit","No","HeaderHAlignment","Center")
+				Gui.F_SPLIT.GsGridControl1.SetColumnProperty("gvSplit","No","Caption","Split #")
+				
+				Gui.F_SPLIT.GsGridControl1.SetColumnProperty("gvSplit","Add","ShowCaption",False)
+				Gui.F_SPLIT.GsGridControl1.ColumnEdit("gvSplit","Add","EditorButton","Add")
+				Gui.F_SPLIT.GsGridControl1.SetColumnProperty("gvSplit","Add","AllowEdit",False)
+				Gui.F_SPLIT.GsGridControl1.SetColumnProperty("gvSplit","Add","MinWidth","80")
+				
+				Gui.F_SPLIT.GsGridControl1.ResumeLayout()
+				Gui.F_SPLIT.GsGridControl1.MainView("gvSplit")
+				
+				Gui.F_SPLIT..Show
+	
+			F.Intrinsic.Control.Else
+				
+				F.Intrinsic.UI.Msgbox("This prepayment cannot be split. Invoice/Accrual has been created.","PO Prepayment Dashboard (6477)")
+				
+			F.Intrinsic.Control.EndIf
+			
+		F.Intrinsic.Control.CaseAny("DelSplit","DELSPLIT")
+		
+			Gui.F_PODash.GsGC_PO.GetCellValueByColumnName("gvPORecv","Vendor",V.Args.RowIndex,V.Global.sVendor)
+			Gui.F_PODash.GsGC_PO.GetCellValueByColumnName("gvPORecv","PURCHASE_ORDER",V.Args.RowIndex,V.Global.sPO)
+			Gui.F_PODash.GsGC_PO.GetCellValueByColumnName("gvPORecv","Receiver_No",V.Args.RowIndex,V.Global.sRecv)
+			Gui.F_PODash.GsGC_PO.GetCellValueByColumnName("gvPORecv","Invoice",V.Args.RowIndex,V.Global.sInv)
+			
+			F.Intrinsic.String.Build("Select * From PO_RECEIVER Where Receiver_No = '{0}' and Purchase_Order = '{1}' and Vendor = '{2}' and Pack_List = '{3}';", V.Global.sRecv, V.Global.sPO, V.Global.sVendor, V.Global.sInv, V.Local.sSQL)
+			F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst",V.Local.sSQL)
+			
+			F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,True)
+				
+				F.Intrinsic.UI.Msgbox("This prepayment is not split prepayment and cannot be deleted.","PO Prepayment Dashboard (6477)")
+				
+			F.Intrinsic.Control.Else
+			
+				Gui.F_PODash.GsGC_PO.GetCellValueByColumnName("gvPORecv","Cost_Invoiced",V.Args.RowIndex,V.Local.fInvoiced)
+				
+				F.Intrinsic.Control.If(V.Local.fInvoiced,=,0)
+					F.Intrinsic.UI.Msgbox("Are you sure you want to delete this record?","PO Prepayment Dashboard (6477)",4,V.Local.iRet)
+					F.Intrinsic.Control.If(V.Local.iRet,=,6)
+						F.Intrinsic.UI.InvokeWaitDialog("Deleting Record in Database.")
+	
+						'Set Change Date Format
+						F.Intrinsic.String.Format(V.Ambient.Date,"YYYYMMDD",V.Local.sChangeDate)
+						
+						'Set Transaction Time
+						F.Intrinsic.String.TimeStringSec(Variable.Ambient.Time,V.Local.sTransTime)
+						F.Intrinsic.String.Build("{0}0000",V.Local.sTransTime,V.Local.sTransTime)
+						
+						F.Intrinsic.String.Build("Select POR.* From PO_RECEIVER POR left join (Select A.VRP, A.Invoice from (Select Batch_Num, rtrim(vendor)+receiver+purchase_order as VRP, Receiver, Invoice From V_AP_Open_Items Union All Select Batch_Num, rtrim(vendor)+receiver+purchase_order, Receiver, Invoice From V_AP_Hist) A where right(A.Receiver,1) = 'D' and Left(A.Batch_Num,1) = 'A') INV on rtrim(POR.vendor)+POR.receiver_no+POR.purchase_order = INV.VRP Where POR.Purchase_Order = '{1}' and POR.Vendor = '{2}' and INV.Invoice = '{3}';", V.Global.sRecv, V.Global.sPO, V.Global.sVendor, V.Global.sInv, V.Local.sSQL)
+						F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst2",V.Local.sSQL)
+						
+						F.Intrinsic.Math.Add(V.ODBC.conx!rst.FieldValFloat!Extended_Cost, V.ODBC.conx!rst2.FieldValFloat!Extended_Cost, V.Local.fAmt)
+						F.Intrinsic.Math.Add(V.ODBC.conx!rst.FieldValFloat!Exch_Ext_Cost, V.ODBC.conx!rst2.FieldValFloat!Exch_Ext_Cost, V.Local.fForexAmt)
+						
+						F.Intrinsic.String.Build("Update PO_Receiver Set Exch_Ext_Cost = {0}, Exch_Ext_Std_Cost = {0}, Extended_Cost = {1}, Extended_Std_Cost = {1}, Date_Last_Chg = '{2}', Time_Last_Chg = '{3}', Last_Chg_By = '{4}' where Receiver_No = '{5}' and Purchase_Order = '{6}' and Vendor = '{7}' ",V.Local.fForexAmt, V.Local.fAmt, V.Local.sChangeDate, V.Local.sTransTime, V.Caller.User, V.ODBC.conx!rst2.FieldValTrim!Receiver_No, V.ODBC.conx!rst2.FieldValTrim!Purchase_Order, V.ODBC.conx!rst2.FieldValTrim!Vendor, V.Local.sSQL)
+						F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+						
+						F.Intrinsic.String.Build("Delete from PO_Receiver where Receiver_No = '{0}' and Purchase_Order = '{1}' and Vendor = '{2}' and Pack_List = '{3}'",V.Global.sRecv, V.Global.sPO, V.Global.sVendor, V.Global.sInv, V.Local.sSQL)
+						F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+						
+						F.Intrinsic.Control.CallSub(LoadData)
+						f.Intrinsic.UI.CloseWaitDialog
+						f.ODBC.conx!rst2.Close
+					F.Intrinsic.Control.EndIf
+					f.ODBC.conx!rst.Close
+					
+				F.Intrinsic.Control.Else
+					
+					F.Intrinsic.UI.Msgbox("This prepayment cannot be deleted. Invoice/Accrual has been created.","PO Prepayment Dashboard (6477)")	
+					
+				F.Intrinsic.Control.EndIf
+				
+			F.Intrinsic.Control.EndIf
+			
+	f.Intrinsic.Control.EndSelect	
+	
+	F.Intrinsic.Control.Catch
+		F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		f.Intrinsic.Control.CallSub(Unload)
+	F.Intrinsic.Control.EndTry
+Program.Sub.gsgc_PO_RowCellClick.End
+
+Program.Sub.GsGC_RowCellClick.Start
+V.Local.iRow.Declare
+
+F.Intrinsic.Math.Add(V.DataTable.dtSplit.RowCount,1,V.Local.iRow)
+F.Data.DataTable.AddRow("dtSplit","No",V.Local.iRow,"Amount",0)
+F.Data.DataTable.AcceptChanges("dtSplit")
+
+Program.Sub.GsGC_RowCellClick.End
+
+Program.Sub.GsGC_CellValueChanged.Start
+	F.Intrinsic.Control.Try
+	V.Local.sError.Declare
+	V.Local.sTitle.Declare
+	V.Local.fCost.Declare
+	V.Local.fAmt.Declare
+
+	F.Intrinsic.Control.SelectCase(V.Args.column)
+		F.Intrinsic.Control.CaseAny("AMOUNT","Amount")
+			F.Intrinsic.Control.If(V.Args.Value,<,0)
+				F.Intrinsic.UI.Msgbox("Split amount should not less than zero.","PO Prepayment Dashboard (6477)")
+				'F.Intrinsic.Math.Mult(V.Args.Value,-1,V.Local.fAmt)
+				F.Data.DataTable.SetValue("dtSplit",V.Args.RowIndex,"Amount",0)
+				F.Data.DataTable.AcceptChanges("dtSplit")
+				F.Intrinsic.Control.ExitSub
+			F.Intrinsic.Control.Else
+				F.Data.DataTable.Compute("dtSplit","SUM(Amount)","",V.Local.fAmt)
+				F.Intrinsic.Math.Sub(V.Global.fCost,V.Local.fAmt,V.Global.fFinalCost)
+				F.Intrinsic.Control.If(V.Global.fFinalCost,<=,0)
+					F.Intrinsic.UI.Msgbox("Main prepayment cannot be zero.","PO Prepayment Dashboard (6477)")
+					F.Data.DataTable.SetValue("dtSplit",V.Args.RowIndex,"Amount",0)
+					F.Data.DataTable.AcceptChanges("dtSplit")
+					F.Intrinsic.Control.ExitSub
+				F.Intrinsic.Control.EndIf
+			F.Intrinsic.Control.EndIf
+			F.Intrinsic.String.Build("Receiver #{0}			 PO #{1}			Invoice #{2}			Invoice amount {3} {4}", V.Global.sRecv.Trim, V.Global.sPO.Trim, V.Global.sInv.Trim, V.Global.sCustCurr, V.Global.fFinalCost, V.Local.sTitle)
+			Gui.F_SPLIT.lblTitle.Caption(V.Local.sTitle)			
+	F.Intrinsic.Control.EndSelect
+		
+	F.Intrinsic.Control.Catch
+		F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		f.Intrinsic.Control.CallSub(Unload)
+	F.Intrinsic.Control.EndTry
+Program.Sub.GsGC_CellValueChanged.End
+
+Program.Sub.cmdSave_Click.Start
+	F.Intrinsic.Control.Try
+	V.Local.sError.Declare
+	V.Local.sTitle.Declare
+	V.Local.fAmt.Declare
+	V.Local.fForexAmt.Declare
+	V.Local.sSQL.Declare
+	V.Local.sTransTime.Declare
+	V.Local.sChangeDate.Declare
+	V.Local.sRecv.Declare
+	V.Local.iRecv.Declare
+	V.Local.i1.Declare
+	
+	'Set Change Date Format
+	F.Intrinsic.String.Format(V.Ambient.Date,"YYYYMMDD",V.Local.sChangeDate)
+	
+	'Set Transaction Time
+	F.Intrinsic.String.TimeStringSec(Variable.Ambient.Time,V.Local.sTransTime)
+	F.Intrinsic.String.Build("{0}0000",V.Local.sTransTime,V.Local.sTransTime)
+	
+	F.Intrinsic.String.Build("Select * From PO_RECEIVER Where Receiver_No = '{0}' and Purchase_Order = '{1}' and Vendor = '{2}';", V.Global.sRecv, V.Global.sPO, V.Global.sVendor, V.Local.sSQL)
+	F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst",V.Local.sSQL)
+
+	F.Intrinsic.Control.If(V.ODBC.conx!rst.FieldValFloat!Exchange_Rate,=,0)
+		F.Intrinsic.Math.Mult(V.Global.fFinalCost,-1,V.Local.fAmt)
+		V.Local.fForexAmt.Set(0)
+	F.Intrinsic.Control.Else
+		F.Intrinsic.Math.Mult(V.Global.fFinalCost,V.ODBC.conx!rst.FieldValFloat!Exchange_Rate,V.Local.fAmt)
+		F.Intrinsic.Math.Round(V.Local.fAmt,2,1,V.Local.fAmt)
+		F.Intrinsic.Math.Mult(V.Local.fAmt,-1,V.Local.fAmt)
+		V.Local.fForexAmt.Set(V.Global.fFinalCost)
+		F.Intrinsic.Math.Mult(V.Local.fForexAmt,-1,V.Local.fForexAmt)
+	F.Intrinsic.Control.EndIf
+
+	F.Intrinsic.String.Build("Update PO_Receiver Set Exch_Ext_Cost = {0}, Exch_Ext_Std_Cost = {0}, Extended_Cost = {1}, Extended_Std_Cost = {1}, Date_Last_Chg = '{2}', Time_Last_Chg = '{3}', Last_Chg_By = '{4}' where Receiver_No = '{5}' and Purchase_Order = '{6}' and Vendor = '{7}' ",V.Local.fForexAmt, V.Local.fAmt, V.Local.sChangeDate, V.Local.sTransTime, V.Caller.User, V.Global.sRecv, V.Global.sPO, V.Global.sVendor, V.Local.sSQL)
+	F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+		
+	F.Intrinsic.Control.For(V.Local.i1,0,V.DataTable.dtSplit.RowCount--,1)
+		F.Intrinsic.Control.If(V.DataTable.dtSplit(V.Local.i1).Amount!FieldValFloat,<>,0)	
+	
+			'Set Transaction Time
+			F.Intrinsic.String.TimeStringSec(Variable.Ambient.Time,V.Local.sTransTime)
+			F.Intrinsic.String.Build("{0}0000",V.Local.sTransTime,V.Local.sTransTime)
+			
+			'Set Receiver Number
+			F.ODBC.Connection!conx.ExecuteAndReturn("Select Top 1 Receiver_No From PO_Receiver Where Right(Receiver_No,1) = 'D' Order by Receiver_No Desc",V.Local.sRecv)
+			F.Intrinsic.Control.If(V.Local.sRecv,=,"99999D")
+				V.Local.sRecv.Set("00001D")
+			F.Intrinsic.Control.Else
+				F.Intrinsic.String.Left(V.Local.sRecv,5,V.Local.sRecv)
+				V.Local.iRecv.Set(V.Local.sRecv)
+				F.Intrinsic.Math.Add(V.Local.iRecv,1,V.Local.iRecv)
+				V.Local.sRecv.Set(V.Local.iRecv)
+				F.Intrinsic.String.LPad(V.Local.sRecv,"000000",5,V.Local.sRecv)
+				F.Intrinsic.String.Build("{0}D",V.Local.sRecv,V.Local.sRecv)
+			F.Intrinsic.Control.EndIf
+			
+			F.Intrinsic.Control.If(V.ODBC.conx!rst.FieldValFloat!Exchange_Rate,=,0)
+				F.Intrinsic.Math.Mult(V.DataTable.dtSplit(V.Local.i1).Amount!FieldValFloat,-1,V.Local.fAmt)
+				V.Local.fForexAmt.Set(0)
+			F.Intrinsic.Control.Else
+				F.Intrinsic.Math.Mult(V.DataTable.dtSplit(V.Local.i1).Amount!FieldValFloat,V.ODBC.conx!rst.FieldValFloat!Exchange_Rate,V.Local.fAmt)
+				F.Intrinsic.Math.Round(V.Local.fAmt,2,1,V.Local.fAmt)
+				F.Intrinsic.Math.Mult(V.Local.fAmt,-1,V.Local.fAmt)
+				V.Local.fForexAmt.Set(V.DataTable.dtSplit(V.Local.i1).Amount!FieldValFloat)
+				F.Intrinsic.Math.Mult(V.Local.fForexAmt,-1,V.Local.fForexAmt)
+			F.Intrinsic.Control.EndIf
+			
+			F.Intrinsic.String.Build("insert into PO_Receiver(Receiver_No, Purchase_Order, PO_Line, Date_Received, Part, Extended_Cost, Qty_Received, GL_Account, Job, Suffix, Sequence, Vendor, Description, Pack_List, Qty_Invoiced, Cost_Invoiced, Extended_Std_Cost, FLAG_OPN_ITM_POST, Date_Transaction, Time_Transaction, Flag_Rcvr_Sales_Ord, Exchange_Currency, Date_Exchange, Exchange_Rate, Exch_Ext_Cost, Exch_Cost_Inv, Exch_Ext_Std_Cost, Pay_With_CCARD, CC_Vendor, Taxable, Book_Use_Tax, Tax_Code, VAT_Rule, Use_Purpose, Date_Last_Chg, Time_Last_Chg, Last_Chg_By, Last_CHG_Prog) values('{0}','{1}', '{2}', '{3}', '{4}', {5}, {6}, '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', {14}, {15}, {16}, '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', {23}, {24}, {25}, {26}, '{27}', '{28}', '{29}', {30}, '{31}', '{32}', '{33}', '{34}', '{35}', '{36}', '{37}');",V.Local.sRecv.Trim, V.Global.sPO.Trim, "999", V.ODBC.conx!rst.FieldValTrim!Date_Received, "DP", V.Local.fAmt, 1, V.ODBC.conx!rst.FieldValTrim!GL_Account, V.ODBC.conx!rst.FieldValTrim!Job, V.ODBC.conx!rst.FieldValTrim!Suffix, V.ODBC.conx!rst.FieldValTrim!Suffix, V.ODBC.conx!rst.FieldValTrim!Vendor, "Down Payment", V.Global.sInvoice, 0, 0, V.Local.fAmt, "Y", V.ODBC.conx!rst.FieldValTrim!Date_Transaction, V.ODBC.conx!rst.FieldValTrim!Time_Transaction, "", V.ODBC.conx!rst.FieldValTrim!Exchange_Currency, V.ODBC.conx!rst.FieldValTrim!Date_Exchange, V.ODBC.conx!rst.FieldValFloat!Exchange_Rate, V.Local.fForexAmt, 0, V.Local.fForexAmt, V.ODBC.conx!rst.FieldValTrim!Pay_With_Ccard, V.ODBC.conx!rst.FieldValTrim!CC_Vendor, V.ODBC.conx!rst.FieldValLong!Taxable, 0, V.ODBC.conx!rst.FieldValTrim!Tax_Code, V.ODBC.conx!rst.FieldValTrim!VAT_Rule, V.ODBC.conx!rst.FieldValTrim!Use_Purpose, V.Local.sChangeDate, V.Local.sTransTime, V.Caller.User, "GAB6477", V.Local.sSQL)
+			F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.Next(V.Local.i1)
+	F.ODBC.conx!rst.Close
+	
+	F.Intrinsic.UI.Msgbox("Saved!", "PO Prepayment Dashboard (6477)")
+	
+	f.Intrinsic.Control.CallSub(f_Split_Unload)
+		
+	F.Intrinsic.Control.Catch
+		F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		f.Intrinsic.Control.CallSub(Unload)
+	F.Intrinsic.Control.EndTry
+Program.Sub.cmdSave_Click.End
+
+Program.Sub.f_Split_UnLoad.Start
+	F.Intrinsic.Control.Try
+	V.Local.sError.Declare
+	
+	Gui.f_Split..Visible(False)
+	F.Intrinsic.Control.CallSub(LoadData)
+	
+	F.Intrinsic.Control.Catch
+		F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+		f.Intrinsic.Control.CallSub(frmMaster_unload)
+	F.Intrinsic.Control.EndTry
+Program.Sub.f_Split_UnLoad.End
+
+Program.Sub.Unload.Start
+	F.Intrinsic.Control.End
+Program.Sub.Unload.End
+
+Program.Sub.Comments.Start
+${$5$}$20.1.8784.19863$}$1
+${$6$}$dyunus$}$20240201155152371$}$xZ6SHi8g7O0Qsxe6AiO2NH3PnOKQRy0TlZzN4+foWpYMG3VIpm1luiWIAc1rVtAae7mIxAbl9Sc=
+Program.Sub.Comments.End
