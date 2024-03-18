@@ -1,0 +1,385 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.Form..Create(BaseForm)
+Gui.Form..Caption("Form")
+Gui.Form..Size(1024,720)
+Gui.Form..MinX(0)
+Gui.Form..MinY(0)
+Gui.Form..Position(0,0)
+Gui.Form..AlwaysOnTop(False)
+Gui.Form..FontName("Tahoma")
+Gui.Form..FontSize(8.25)
+Gui.Form..ControlBox(True)
+Gui.Form..MaxButton(True)
+Gui.Form..MinButton(True)
+Gui.Form..MousePointer(0)
+Gui.Form..Moveable(True)
+Gui.Form..Sizeable(True)
+Gui.Form..ShowInTaskBar(True)
+Gui.Form..TitleBar(True)
+Gui.Form.GsGridControl1.Create(GsGridControl)
+Gui.Form.GsGridControl1.Enabled(True)
+Gui.Form.GsGridControl1.Visible(True)
+Gui.Form.GsGridControl1.Zorder(0)
+Gui.Form.GsGridControl1.Size(909,218)
+Gui.Form.GsGridControl1.Position(31,24)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+V.Global.sAccount.Declare
+V.Global.sPO.Declare
+V.Global.sVendor.Declare
+V.Global.sJob.Declare
+V.Global.sSuffix.Declare
+V.Global.fExchRate.Declare
+V.Global.sExchCurr.Declare
+V.Global.sPayCC.Declare
+V.Global.sVendorCC.Declare
+V.Global.sTax.Declare
+V.Global.sVAT.Declare
+V.Global.sBatch.Declare
+V.Global.sInvoice.Declare
+V.Global.dInvDate.Declare
+V.Global.sRecvDate.Declare
+V.Global.sTransDate.Declare
+V.Global.sTransTime.Declare
+V.Global.dExchDate.Declare
+V.Global.sChangeDate.Declare
+V.Global.sExchDate.Declare
+V.Global.iTaxFlag.Declare
+V.Global.iUsageFlag.Declare
+V.Global.sSeq.Declare
+V.Global.fExtCost.Declare
+V.Global.sRecv.Declare
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+V.Local.dInvDate.Declare
+V.Local.fExtCost.Declare
+V.Local.sRecvDate.Declare
+V.Local.iYear.Declare
+V.Local.iMonth.Declare
+V.Local.iDay.Declare
+V.Local.sTransDate.Declare
+V.Local.dExchDate.Declare
+V.Local.sExchDate.Declare
+V.Local.iTaxFlag.Declare
+V.Local.iUsageFlag.Declare
+V.Local.sSQL.Declare
+V.Local.sTransTime.Declare
+V.Local.sTransTimeSec.Declare
+V.Local.sSeq.Declare
+V.Local.sChangeDate.Declare
+V.Local.i1.Declare
+V.Local.iRecv.Declare
+V.Local.sRecv.Declare
+V.Local.sAccount.Declare
+V.Local.sFilter.Declare
+V.Local.sRet.Declare
+V.Local.sTitles.Declare
+V.Local.iWidths.Declare
+v.Local.fDiscount.Declare
+V.Local.fCostPreTax.Declare
+v.Local.fTax.Declare
+V.Local.fCostNoDiscNoTax.Declare
+V.Local.fPOTotal.Declare
+V.Local.fInvTotal.Declare
+V.Local.fDPTotal.Declare
+v.Local.fCostPostTax.Declare
+V.Local.fExchRate.Declare
+V.Local.fDiff.Declare
+V.Local.sMsg.Declare
+V.Local.bExist.Declare
+
+F.ODBC.Connection!conx.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass,10000)
+
+'Check if custom table exists
+F.ODBC.Connection!conx.TableExists("GAB_6477_ACCT",V.Local.bExist)
+F.Intrinsic.Control.If(V.Local.bExist,=,False)
+	F.Intrinsic.UI.Msgbox("Please setup the prepayment account first on Purchasing > Admin > Prepayment Account Setup (6477)"."PO Prepayment (6477)")
+	F.ODBC.Connection!conx.Close
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+
+'Create a PO Prepayment Invoice from AP Batch Entry > New > invoice.
+
+F.Intrinsic.Control.If(V.Caller.Hook,=,35105)
+Variable.Passed.000053.Set("Prepayment")
+
+F.Intrinsic.Control.ElseIf(V.Caller.Hook,=,35110)
+	V.Local.fPOTotal.Set(0)
+	F.Intrinsic.String.Build("select * From GAB_6477_ACCT Where Account = '{0}'",Variable.Passed.000014,V.Local.sSQL)
+	F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst",V.Local.sSQL)
+
+	F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,False)
+		F.Intrinsic.String.Build("select * From PO_Header Where Purchase_Order = '{0}' and Vendor = '{1}'", V.Passed.000030.Trim,  Variable.Passed.000002, V.Local.sSQL)
+		F.ODBC.Connection!conx.OpenLocalRecordsetRO("rstPO",V.Local.sSQL)
+		F.Intrinsic.Control.If(V.ODBC.conx!rstPO.EOF,=,True)
+			F.Intrinsic.UI.Msgbox("PO number is not found! Please enter the correct one.","PO Prepayment (6477)")
+			V.Passed.777777.Set(1)
+			F.ODBC.Connection!conx.Close
+			F.Intrinsic.Control.End
+		F.Intrinsic.Control.Else
+			V.Local.fExchRate.Set(Variable.Passed.000170)
+			F.Intrinsic.Control.If(V.Local.fExchRate,<>,0)
+				V.Local.fInvTotal.Set(Variable.Passed.000041)
+				F.Intrinsic.String.Build("SELECT RECORD_NO, Exchange_Cost2, QTY_ORDER, Ven_Tax_Per_Piece, Discount FROM V_PO_LINES WHERE PURCHASE_ORDER = '{0}'",V.Passed.000030.Trim, V.Local.sSQL)
+				F.ODBC.Connection!conx.OpenLocalRecordsetRO("rstPOLine",V.Local.sSQL)
+				F.Intrinsic.Control.DoUntil(V.ODBC.conx!rstPOLine.EOF,=,True)
+					'Calculate Total Cost with Discount Before Tax
+					F.Intrinsic.Math.Sub(1,V.ODBC.conx!rstPOLine.FieldValFloat!Discount,v.Local.fDiscount)
+					F.Intrinsic.Math.Mult(V.ODBC.conx!rstPOLine.FieldValFloat!Exchange_Cost2,V.Local.fDiscount,V.Local.fCostPreTax)
+					F.Intrinsic.Math.Mult(V.Local.fCostPreTax,V.ODBC.conx!rstPOLine.FieldValFloat!Qty_Order,V.Local.fCostPreTax)
+					
+					'Calculate Total Cost with Discount After Tax
+					F.Intrinsic.Math.Mult(V.ODBC.conx!rstPOLine.FieldValFloat!Ven_Tax_Per_Piece,V.ODBC.conx!rstPOLine.FieldValFloat!Qty_Order,v.Local.fTax)
+					F.Intrinsic.Math.Add(v.Local.fTax,V.Local.fCostPreTax,v.Local.fCostPostTax)
+					
+					'Calculate Total Cost Without Discount & Without Tax
+					F.Intrinsic.Math.Mult(V.ODBC.conx!rstPOLine.FieldValFloat!Qty_Order,V.ODBC.conx!rstPOLine.FieldValFloat!Exchange_Cost2,V.Local.fCostNoDiscNoTax)
+					
+					F.Intrinsic.Math.Add(V.Local.fCostPreTax,V.Local.fPOTotal,V.Local.fPOTotal)
+					F.ODBC.conx!rstPOLine.MoveNext
+				F.Intrinsic.Control.Loop
+				F.ODBC.conx!rstPOLine.Close
+				
+				F.Intrinsic.Math.Round(V.Local.fPOTotal,2,1,V.Local.fPOTotal)
+				
+				'Calculate Total Cost from existing Deposit
+				F.Intrinsic.String.Build("Select -1*sum(Exch_Ext_Cost) as Total From V_PO_Receiver Where Right(Receiver_No,1) = 'D' and Purchase_Order = '{0}'",V.Passed.000030.Trim, V.Local.sSqL)
+				F.ODBC.Connection!conx.OpenLocalRecordsetRO("rstTotal",V.Local.sSQL)
+				F.Intrinsic.Control.If(V.ODBC.conx!rstTotal.EOF,=,True)
+					V.Local.fDPTotal.Set(0)
+				F.Intrinsic.Control.Else
+					V.Local.fDPTotal.Set(V.ODBC.conx!rstTotal.FieldValFloat!Total)
+				F.Intrinsic.Control.EndIf
+				F.ODBC.conx!rstTotal.Close
+				
+				F.Intrinsic.Math.Add(V.Local.fDPTotal,V.Local.fInvTotal,V.Local.fInvTotal)
+				
+				F.Intrinsic.String.Build("Select sum(Exch_Amt) as Total From V_AP_Open_Batches Where GL_Acct = '{0}' and PO_Num = '{1}'",Variable.Passed.000014, V.Passed.000030.Trim, V.Local.sSqL)
+				F.ODBC.Connection!conx.OpenLocalRecordsetRO("rstTotal",V.Local.sSQL)
+				F.Intrinsic.Control.If(V.ODBC.conx!rstTotal.EOF,=,True)
+					V.Local.fDPTotal.Set(0)
+				F.Intrinsic.Control.Else
+					V.Local.fDPTotal.Set(V.ODBC.conx!rstTotal.FieldValFloat!Total)
+				F.Intrinsic.Control.EndIf
+				F.ODBC.conx!rstTotal.Close
+				
+				F.Intrinsic.Math.Add(V.Local.fDPTotal,V.Local.fInvTotal,V.Local.fInvTotal)
+				
+				F.Intrinsic.Math.Round(V.Local.fInvTotal,2,1,V.Local.fInvTotal)
+				
+				F.Intrinsic.Control.If(V.Local.fPOTotal,<,V.Local.fInvTotal)
+					F.Intrinsic.Math.Sub(V.Local.fInvTotal,V.Local.fPOTotal,V.Local.fDiff)
+					F.Intrinsic.Math.Round(V.Local.fDiff,2,1,V.Local.fDiff)
+					F.Intrinsic.Control.If(V.Local.fDiff,>,0.01)
+						F.Intrinsic.String.Build("Total down payment amount ({0}) is greater than total PO ({1}). Please modify the invoice amount and try again.", V.Local.fInvTotal, V.Local.fPOTotal, V.Local.sMsg)
+						F.Intrinsic.UI.Msgbox(V.Local.sMsg,"PO Prepayment (6477)")
+						V.Passed.777777.Set(1)
+						F.ODBC.Connection!conx.Close
+						F.Intrinsic.Control.End
+					F.Intrinsic.Control.EndIf
+				F.Intrinsic.Control.EndIf
+			F.Intrinsic.Control.Else
+				V.Local.fInvTotal.Set(Variable.Passed.000023)
+				F.Intrinsic.String.Build("SELECT RECORD_NO, COST_6_DEC, QTY_ORDER, Pur_Tax_Per_Piece, Discount FROM V_PO_LINES WHERE PURCHASE_ORDER = '{0}'",V.Passed.000030.Trim, V.Local.sSQL)
+				F.ODBC.Connection!conx.OpenLocalRecordsetRO("rstPOLine",V.Local.sSQL)
+				F.Intrinsic.Control.DoUntil(V.ODBC.conx!rstPOLine.EOF,=,True)
+					'Calculate Total Cost with Discount Before Tax
+					F.Intrinsic.Math.Sub(1,V.ODBC.conx!rstPOLine.FieldValFloat!Discount,v.Local.fDiscount)
+					F.Intrinsic.Math.Mult(V.ODBC.conx!rstPOLine.FieldValFloat!COST_6_DEC,V.Local.fDiscount,V.Local.fCostPreTax)
+					F.Intrinsic.Math.Mult(V.Local.fCostPreTax,V.ODBC.conx!rstPOLine.FieldValFloat!Qty_Order,V.Local.fCostPreTax)
+					
+					'Calculate Total Cost with Discount After Tax
+					F.Intrinsic.Math.Mult(V.ODBC.conx!rstPOLine.FieldValFloat!Pur_Tax_Per_Piece,V.ODBC.conx!rstPOLine.FieldValFloat!Qty_Order,v.Local.fTax)
+					F.Intrinsic.Math.Add(v.Local.fTax,V.Local.fCostPreTax,v.Local.fCostPostTax)
+					
+					'Calculate Total Cost Without Discount & Without Tax
+					F.Intrinsic.Math.Mult(V.ODBC.conx!rstPOLine.FieldValFloat!Qty_Order,V.ODBC.conx!rstPOLine.FieldValFloat!COST_6_DEC,V.Local.fCostNoDiscNoTax)
+					
+					F.Intrinsic.Math.Add(V.Local.fCostPreTax,V.Local.fPOTotal,V.Local.fPOTotal)
+					F.ODBC.conx!rstPOLine.MoveNext
+				F.Intrinsic.Control.Loop
+				F.ODBC.conx!rstPOLine.Close
+				
+				F.Intrinsic.Math.Round(V.Local.fPOTotal,2,1,V.Local.fPOTotal)
+
+				'Calculate Total Cost from existing Deposit
+				F.Intrinsic.String.Build("Select -1*sum(Extended_Cost) as Total From V_PO_Receiver Where Right(Receiver_No,1) = 'D' and Purchase_Order = '{0}'",V.Passed.000030.Trim, V.Local.sSqL)
+				F.ODBC.Connection!conx.OpenLocalRecordsetRO("rstTotal",V.Local.sSQL)
+				F.Intrinsic.Control.If(V.ODBC.conx!rstTotal.EOF,=,True)
+					V.Local.fDPTotal.Set(0)
+				F.Intrinsic.Control.Else
+					V.Local.fDPTotal.Set(V.ODBC.conx!rstTotal.FieldValFloat!Total)
+				F.Intrinsic.Control.EndIf
+				F.ODBC.conx!rstTotal.Close	
+				F.Intrinsic.Math.Add(V.Local.fDPTotal,V.Local.fInvTotal,V.Local.fInvTotal)
+				
+				F.Intrinsic.String.Build("Select sum(Temp_Amt) as Total From V_AP_Open_Batches Where GL_Acct = '{0}' and PO_Num = '{1}'",Variable.Passed.000014, V.Passed.000030.Trim, V.Local.sSqL)
+				F.ODBC.Connection!conx.OpenLocalRecordsetRO("rstTotal",V.Local.sSQL)
+				F.Intrinsic.Control.If(V.ODBC.conx!rstTotal.EOF,=,True)
+					V.Local.fDPTotal.Set(0)
+				F.Intrinsic.Control.Else
+					V.Local.fDPTotal.Set(V.ODBC.conx!rstTotal.FieldValFloat!Total)
+				F.Intrinsic.Control.EndIf
+				F.ODBC.conx!rstTotal.Close
+				F.Intrinsic.Math.Add(V.Local.fDPTotal,V.Local.fInvTotal,V.Local.fInvTotal)
+				
+				F.Intrinsic.Math.Round(V.Local.fInvTotal,2,1,V.Local.fInvTotal)
+
+				F.Intrinsic.Control.If(V.Local.fPOTotal,<,V.Local.fInvTotal)
+					F.Intrinsic.Math.Sub(V.Local.fInvTotal,V.Local.fPOTotal,V.Local.fDiff)
+					F.Intrinsic.Math.Round(V.Local.fDiff,2,1,V.Local.fDiff)
+					F.Intrinsic.Control.If(V.Local.fDiff,>,0.01)
+						F.Intrinsic.String.Build("Total down payment amount ({0}) is greater than total PO ({1}). Please modify the invoice amount and try again.", V.Local.fInvTotal, V.Local.fPOTotal, V.Local.sMsg)
+						F.Intrinsic.UI.Msgbox(V.Local.sMsg,"PO Prepayment (6477)")
+						V.Passed.777777.Set(1)
+						F.ODBC.Connection!conx.Close
+						F.Intrinsic.Control.End
+					F.Intrinsic.Control.EndIf
+				F.Intrinsic.Control.EndIf
+				
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.EndIf
+		
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conx!rst.Close
+	
+'Update GL account from Accrued to Prepayment account after save the Invoice/Accrual batch.
+F.Intrinsic.Control.ElseIf(V.Caller.Hook,=,33522)
+
+	F.Intrinsic.String.Build("Select * From V_AP_Open_Batches Where Batch = '{0}' and Vend = '{1}' and Invc = '{2}' and right(Receiver, 1) = 'D'", Variable.Passed.000001, Variable.Passed.000051, Variable.Passed.000007, V.Local.sSQL)
+	F.Data.DataTable.CreateFromSQL("dtAPBatch",conx,V.Local.sSQL)
+	F.Intrinsic.Control.For(V.Local.i1,0,V.DataTable.dtAPBatch.RowCount--,1)
+		F.Intrinsic.String.Build("Select GL_Account From V_PO_Receiver Where Receiver_No = '{0}' and Purchase_Order = '{1}' and Vendor = '{2}' and Part = 'DP'", V.DataTable.dtAPBatch(V.Local.i1).Receiver!FieldValTrim, V.DataTable.dtAPBatch(V.Local.i1).PO_Num!FieldValTrim, V.DataTable.dtAPBatch(V.Local.i1).Vend!FieldValTrim, V.Local.sSQL)
+		F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst",V.Local.sSQL)
+		
+		F.Intrinsic.String.Build("Update AP_Open_Batches Set GL_Acct = '{6}' Where Batch = '{0}' and Vend = '{1}' and Invc = '{2}' and Receiver = '{3}' and PO_Num = '{4}' and PO_Line = '{5}'", V.DataTable.dtAPBatch(V.Local.i1).Batch!FieldValTrim, V.DataTable.dtAPBatch(V.Local.i1).Vend!FieldValTrim, V.DataTable.dtAPBatch(V.Local.i1).Invc!FieldValTrim, V.DataTable.dtAPBatch(V.Local.i1).Receiver!FieldValTrim, V.DataTable.dtAPBatch(V.Local.i1).PO_Num!FieldValTrim, V.DataTable.dtAPBatch(V.Local.i1).PO_Line!FieldValTrim, V.ODBC.conx!rst.FieldValTrim!GL_Account, V.Local.sSQL)
+		F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+		F.ODBC.conx!rst.Close
+	F.Intrinsic.Control.Next(V.Local.i1)
+
+'Save the Reversed Invoice number into a custom table after post the Invoice/Accrual batch.
+F.Intrinsic.Control.ElseIf(V.Caller.Hook,=,42400)
+
+	F.Intrinsic.String.Build("select batch_num as Batch, post_date as PostDate from V_BI_COMB_JE_AUDIT where trmnl = '{0}' and account <> '' and Left(Batch_num,1) = 'P' group by batch_num, post_date order by batch_num",V.Caller.Terminal,V.Local.sSQL)
+	F.Data.DataTable.CreateFromSQL("dtAPBatch",conx,V.Local.sSQL)
+	F.Intrinsic.Control.For(V.Local.i1,0,V.DataTable.dtAPBatch.RowCount--,1)
+'		F.Intrinsic.String.Build("Select A.Invoice_No, B.Receiver, A.Vendor From V_GL_AP_Detail A Left Join V_Receiver_Log B On A.Invoice_No = B.Invoice Where A.Batch = '{0}' and A.Post_Date_Sql = '{1}' and A.Invoice_No <> '' and Right(B.Receiver,1) = 'D' Group By A.Invoice_No, B.Receiver, A.Vendor;", V.DataTable.dtAPBatch(V.Local.i1).Batch!FieldValTrim, V.DataTable.dtAPBatch(V.Local.i1).PostDate!FieldValPervasiveDate, V.Local.sSQL)
+		F.Intrinsic.String.Build("Select PO_Num, Invoice_No, Receiver, Vendor From V_GL_AP_Detail Where Batch = '{0}' and Post_Date_Sql = '{1}' and Right(Receiver,1) = 'D' Group By PO_Num, Invoice_No, Receiver, Vendor;", V.DataTable.dtAPBatch(V.Local.i1).Batch!FieldValTrim, V.DataTable.dtAPBatch(V.Local.i1).PostDate!FieldValPervasiveDate, V.Local.sSQL)
+		F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst",V.Local.sSQL)
+		F.Intrinsic.Control.DoUntil(V.ODBC.conx!rst.EOF,=,True)
+		
+		F.Intrinsic.String.Build("Update GAB_6477_Prepayment Set Reversed_Invoice = '{0}' Where Receiver = '{1}' and Vendor = '{2}' and Purchase_Order = '{3}'", V.ODBC.conx!rst.FieldValTrim!Invoice_No, V.ODBC.conx!rst.FieldValTrim!Receiver, V.ODBC.conx!rst.FieldValTrim!Vendor, V.ODBC.conx!rst.FieldValTrim!PO_Num, V.Local.sSQL)
+		F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+		F.ODBC.conx!rst.MoveNext
+		F.Intrinsic.Control.Loop
+		F.ODBC.conx!rst.Close
+	F.Intrinsic.Control.Next(V.Local.i1)
+	F.Data.DataTable.Close("dtAPBatch")	
+
+	F.ODBC.Connection!conx.ExecuteAndReturn("select Account From GAB_6477_ACCT",V.Global.sAccount)
+
+	F.Intrinsic.String.Build("select batch_num as Batch, post_date as PostDate from V_BI_COMB_JE_AUDIT where trmnl = '{0}' and account = '{1}' and Left(Batch_num,1) = 'A' group by batch_num, post_date order by batch_num", V.Caller.Terminal, V.Global.sAccount, V.Local.sSQL)
+	F.Data.DataTable.CreateFromSQL("dtAPBatch",conx,V.Local.sSQL)
+	F.Intrinsic.Control.For(V.Local.i1,0,V.DataTable.dtAPBatch.RowCount--,1)
+		F.Intrinsic.String.Build("Select '' as Receiver_No, A.PO_Num as Purchase_Order, '999' as PO_Line, A.Post_Date as Date_Received,  Right(Post_Date,4) + Right(Left(Post_Date,4),2) as Date_Batch6, 'DP' as Part, -1*A.Amount_Cmpny as Extended_Cost, 1 as Qty_Received, A.GL_Number as GL_Account, A.WO as Job, A.WO_Suffix as Suffix, A.WO_Seq as Sequence, A.Vendor, A.Invoice_No, 'Down Payment' as Description, A.Exch_Vend_Curr as Exchange_Currency, A.Exch_Date as Date_Exchange, A.Exch_Vend_Rate as Exchange_Rate, -1*A.Amount_Vend as Exch_Ext_Cost, B.Pay_With_Ccard, B.Ccard_Vendor as CC_Vendor, A.Taxable_Flg as Taxable, A.Tax_Code, A.VAT_Rule, A.Last_Chg_Date, A.Last_Chg_Time From GL_AP_Detail A Left Join AP_Open_Items B On A.Batch = B.Batch_Num and A.Vendor = B.Vendor and A.Invoice_No = B.Invoice Where A.Batch = '{0}' and A.Post_Date_Sql = '{1}' and A.Invoice_No <> '' and GL_Number = '{2}';", V.DataTable.dtAPBatch(V.Local.i1).Batch!FieldValTrim, V.DataTable.dtAPBatch(V.Local.i1).PostDate!FieldValPervasiveDate, V.Global.sAccount.Trim, V.Local.sSQL)
+		F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst",V.Local.sSQL)
+		F.Intrinsic.Control.DoUntil(V.ODBC.conx!rst.EOF,=,True)
+		
+		'Set Transaction Time
+		F.Intrinsic.String.TimeStringSec(Variable.Ambient.Time,V.Global.sTransTime)
+		F.Intrinsic.String.Build("{0}0000",V.Global.sTransTime,V.Global.sTransTime)
+				
+		'Set Receiver Number
+		F.ODBC.Connection!conx.ExecuteAndReturn("Select Top 1 Receiver_No From PO_Receiver Where Right(Receiver_No,1) = 'D' Order by Receiver_No Desc",V.Global.sRecv)
+		F.Intrinsic.Control.If(V.Global.sRecv,=,"99999D")
+			V.Global.sRecv.Set("00001D")
+		F.Intrinsic.Control.Else
+			F.Intrinsic.String.Left(V.Global.sRecv,5,V.Global.sRecv)
+			V.Local.iRecv.Set(V.Global.sRecv)
+			F.Intrinsic.Math.Add(V.Local.iRecv,1,V.Local.iRecv)
+			V.Global.sRecv.Set(V.Local.iRecv)
+			F.Intrinsic.String.LPad(V.Global.sRecv,"000000",5,V.Global.sRecv)
+			F.Intrinsic.String.Build("{0}D",V.Global.sRecv,V.Global.sRecv)
+		F.Intrinsic.Control.EndIf
+		
+		'Set Change Date Format
+		F.Intrinsic.String.Right(V.ODBC.conx!rst.FieldValTrim!Date_Received,6,V.Global.sTransDate)
+		F.Intrinsic.String.Format(V.Ambient.Date,"YYYYMMDD",V.Global.sChangeDate)
+
+		'Set Transaction Time
+		F.Intrinsic.String.TimeStringSec(Variable.Ambient.Time,V.Global.sTransTime)
+		F.Intrinsic.String.Build("{0}00",V.Global.sTransTime,V.Global.sTransTime)
+		
+		'Set Usage Flag
+		F.Intrinsic.String.Build("Select Use_Purpose From AP_Inv_Tax_DTL where Vendor_id = '{0}' and Batch_Num = '{1}' and Invoice = '{2}'", V.ODBC.conx!rst.FieldValTrim!Vendor, V.DataTable.dtAPBatch(V.Local.i1).Batch!FieldValTrim, V.ODBC.conx!rst.FieldValTrim!Invoice_No, V.Local.sSQL)
+		F.ODBC.Connection!conx.ExecuteAndReturn(V.Local.sSQL,V.Global.iUsageFlag)
+		
+		'Set Tax Flag
+		F.Intrinsic.Control.If(V.ODBC.conx!rst.FieldValTrim!Taxable,=,"True")
+			V.Global.iTaxFlag.Set(1)
+		F.Intrinsic.Control.Else
+			V.Global.iTaxFlag.Set(0)
+		F.Intrinsic.Control.EndIf
+		
+		'Set Job Sequence
+		F.Intrinsic.Control.If(V.ODBC.conx!rst.FieldValTrim!Sequence,=,"0")
+			V.Global.sSeq.Set("000000")
+		F.Intrinsic.Control.Else
+			V.Global.sSeq.Set(V.ODBC.conx!rst.FieldValTrim!Sequence)
+		F.Intrinsic.Control.EndIf
+		
+		'Set Exchange Cost
+		F.Intrinsic.Control.If(V.ODBC.conx!rst.FieldValFloat!Exchange_Rate,=,0)
+			V.Global.fExtCost.Set(0)
+		F.Intrinsic.Control.Else
+			V.Global.fExtCost.Set(V.ODBC.conx!rst.FieldValFloat!Exch_Ext_Cost)
+		F.Intrinsic.Control.EndIf
+		
+		'Add Down Payment Line Into PO_Receiver Table
+		F.Intrinsic.String.Build("insert into PO_Receiver(Receiver_No, Purchase_Order, PO_Line, Date_Received, Part, Extended_Cost, Qty_Received, GL_Account, Job, Suffix, Sequence, Vendor, Description, Qty_Invoiced, Cost_Invoiced, Extended_Std_Cost, FLAG_OPN_ITM_POST, Date_Transaction, Time_Transaction, Flag_Rcvr_Sales_Ord, Exchange_Currency, Date_Exchange, Exchange_Rate, Exch_Ext_Cost, Exch_Cost_Inv, Exch_Ext_Std_Cost, Pay_With_CCARD, CC_Vendor, Taxable, Book_Use_Tax, Tax_Code, VAT_Rule, Use_Purpose, Date_Last_Chg, Time_Last_Chg, Last_Chg_By, Last_CHG_Prog) values('{0}','{1}', '{2}', '{3}', '{4}', {5}, {6}, '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', {13}, {14}, {15}, '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', {22}, {23}, {24}, {25}, '{26}', '{27}', '{28}', {29}, '{30}', '{31}', '{32}', '{33}', '{34}', '{35}', '{36}');",V.Global.sRecv, V.ODBC.conx!rst.FieldValTrim!Purchase_Order, "999", V.ODBC.conx!rst.FieldValTrim!Date_Received, "DP", V.ODBC.conx!rst.FieldValFloat!Extended_Cost, 1, V.ODBC.conx!rst.FieldValTrim!GL_Account, V.ODBC.conx!rst.FieldValTrim!Job, V.ODBC.conx!rst.FieldValTrim!Suffix, V.Global.sSeq, V.ODBC.conx!rst.FieldValTrim!Vendor, "Down Payment", 0, 0, V.ODBC.conx!rst.FieldValFloat!Extended_Cost, "Y", V.Global.sTransDate, V.Global.sTransTime, "", V.ODBC.conx!rst.FieldValTrim!Exchange_Currency, V.ODBC.conx!rst.FieldValTrim!Date_Exchange, V.ODBC.conx!rst.FieldValFloat!Exchange_Rate, V.Global.fExtCost, 0, V.Global.fExtCost, V.ODBC.conx!rst.FieldValTrim!Pay_With_Ccard, V.ODBC.conx!rst.FieldValTrim!CC_Vendor, V.Global.iTaxFlag, 0, V.ODBC.conx!rst.FieldValTrim!Tax_Code, V.ODBC.conx!rst.FieldValTrim!VAT_Rule, V.Global.iUsageFlag, V.Global.sChangeDate, V.Global.sTransTime, V.Caller.User, "GAB6477", V.Local.sSQL)
+		F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+
+		'Add the records Into custom Table
+		F.Intrinsic.String.Build("insert into GAB_6477_Prepayment(Batch, Vendor, Invoice, Purchase_Order, Receiver, Created_By, Created_date) values('{0}','{1}', '{2}', '{3}', '{4}', '{5}', '{6}');",V.DataTable.dtAPBatch(V.Local.i1).Batch!FieldValTrim, V.ODBC.conx!rst.FieldValTrim!Vendor, V.ODBC.conx!rst.FieldValTrim!Invoice_No, V.ODBC.conx!rst.FieldValTrim!Purchase_Order, V.Global.sRecv, V.Caller.User, V.Ambient.Date.PervasiveDate, V.Ambient.Time.PervasiveDate, V.Local.sSQL)
+		F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+		
+		'Update receiver number Into invoice batch
+		F.Intrinsic.String.Build("Update AP_Open_Items Set Receiver = '{0}' Where Batch_Num = '{1}' and Purchase_Order ='{2}' and Vendor = '{3}' and date_batch = '{4}';", V.Global.sRecv, V.DataTable.dtAPBatch(V.Local.i1).Batch!FieldValTrim, V.ODBC.conx!rst.FieldValTrim!Purchase_Order, V.ODBC.conx!rst.FieldValTrim!Vendor, V.ODBC.conx!rst.FieldValTrim!Date_Batch6, V.Local.sSQL)
+		F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+		F.ODBC.conx!rst.MoveNext
+		F.Intrinsic.Control.Loop
+		F.ODBC.conx!rst.Close
+	F.Intrinsic.Control.Next(V.Local.i1)
+
+'Select PO Number and GL Account Prepayment On Script 3
+F.Intrinsic.Control.ElseIf(V.Caller.Hook,=,35123)
+	F.Intrinsic.String.Split("PO*!*Order Date","*!*",V.Local.sTitles)
+	F.Intrinsic.String.Split("1600*!*1600","*!*",V.Local.iWidths)
+
+	F.Intrinsic.UI.SetBrowserHotTypeAhead(True)
+	F.Intrinsic.String.Build("SELECT Purchase_Order, Date_Order From V_PO_Header Where LTRIM(RTRIM(Vendor)) = '{0}' Order By Purchase_Order", V.Passed.000002.Trim, V.Local.sFilter)
+	F.Intrinsic.UI.Browser("Select a PO","conx",V.Local.sFilter, V.Local.sTitles, V.Local.iWidths, 12500, 10000, V.Local.sRet)
+
+	F.Intrinsic.Control.If(V.Local.sRet,<>,"***CANCEL***")
+		F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+	
+		Variable.Passed.000030.Set(V.Local.sRet(0).Trim)
+		
+		F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst","Select * From GAB_6477_ACCT")
+		Variable.Passed.000014.Set(V.ODBC.conx!rst.FieldValTrim!Account)
+		F.ODBC.conx!rst.Close
+	F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.EndIf
+F.ODBC.Connection!conx.Close
+F.Intrinsic.Control.End
+
+Program.Sub.Main.End
+
+Program.Sub.Comments.Start
+${$5$}$20.1.8784.19863$}$1
+${$6$}$dyunus$}$20240201155134267$}$xZ6SHi8g7O0Qsxe6AiO2NH3PnOKQRy0TlZzN4+foWpYMG3VIpm1lus3DQorWz2PgPyX1ftzIPKE=
+Program.Sub.Comments.End
