@@ -1,0 +1,152 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.F_Acct..Create(BaseForm)
+Gui.F_Acct..Caption("Setup Prepayment Account")
+Gui.F_Acct..Size(655,143)
+Gui.F_Acct..MinX(0)
+Gui.F_Acct..MinY(0)
+Gui.F_Acct..Position(0,0)
+Gui.F_Acct..AlwaysOnTop(False)
+Gui.F_Acct..FontName("Tahoma")
+Gui.F_Acct..FontSize(8.25)
+Gui.F_Acct..ControlBox(True)
+Gui.F_Acct..MaxButton(True)
+Gui.F_Acct..MinButton(True)
+Gui.F_Acct..MousePointer(0)
+Gui.F_Acct..Moveable(True)
+Gui.F_Acct..Sizeable(True)
+Gui.F_Acct..ShowInTaskBar(True)
+Gui.F_Acct..TitleBar(True)
+Gui.F_Acct..Event(UnLoad,Unload)
+Gui.F_Acct.txtAcct.Create(TextBox,"",True,146,20,0,21,36,True,0,"Tahoma",8.25,,1)
+Gui.F_Acct.txtAcct.Event(LostFocus,txtGLAcct_LostFocus)
+Gui.F_Acct.cmdBrowse.Create(Button)
+Gui.F_Acct.cmdBrowse.Enabled(True)
+Gui.F_Acct.cmdBrowse.Visible(True)
+Gui.F_Acct.cmdBrowse.Zorder(0)
+Gui.F_Acct.cmdBrowse.Size(75,23)
+Gui.F_Acct.cmdBrowse.Position(569,35)
+Gui.F_Acct.cmdBrowse.Caption("^")
+Gui.F_Acct.cmdBrowse.FontName("Tahoma")
+Gui.F_Acct.cmdBrowse.FontSize(8.25)
+Gui.F_Acct.cmdBrowse.Event(Click,cmdBrowse_Click)
+Gui.F_Acct.lbl1.Create(Label,"Select an account",True,100,13,0,22,14,True,0,"Tahoma",8.25,,0,0)
+Gui.F_Acct.lbl1.BorderStyle(0)
+Gui.F_Acct.lbl1.FontStyle(True,False,False,False,False)
+Gui.F_Acct.cmdSave.Create(Button)
+Gui.F_Acct.cmdSave.Enabled(True)
+Gui.F_Acct.cmdSave.Visible(True)
+Gui.F_Acct.cmdSave.Zorder(0)
+Gui.F_Acct.cmdSave.Size(75,23)
+Gui.F_Acct.cmdSave.Position(568,77)
+Gui.F_Acct.cmdSave.Caption("Save")
+Gui.F_Acct.cmdSave.FontName("Tahoma")
+Gui.F_Acct.cmdSave.FontSize(8.25)
+Gui.F_Acct.cmdSave.Event(Click,cmdSave_Click)
+Gui.F_Acct.txtDesc.Create(TextBox,"",True,369,20,0,182,37,True,0,"Tahoma",8.25,,1)
+Gui.F_Acct.txtDesc.Locked(True)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+V.Local.bExist.Declare
+
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+F.ODBC.Connection!conx.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+
+'Check if custom table exists
+F.ODBC.Connection!conx.TableExists("GAB_6477_ACCT",V.Local.bExist)
+F.Intrinsic.Control.If(V.Local.bExist,=,False)
+	F.ODBC.Connection!Conx.Execute("CREATE TABLE GAB_6477_ACCT(ACCOUNT CHAR(15) NOT NULL, PRIMARY KEY(ACCOUNT));")
+F.Intrinsic.Control.EndIf
+
+F.ODBC.Connection!conx.TableExists("GAB_6477_PREPAYMENT",V.Local.bExist)
+F.Intrinsic.Control.If(V.Local.bExist,=,False)
+	F.ODBC.Connection!Conx.Execute("CREATE TABLE GAB_6477_PREPAYMENT(BATCH CHAR(5), VENDOR CHAR(7), INVOICE CHAR(18), PURCHASE_ORDER CHAR(7), RECEIVER CHAR(6), REVERSED_INVOICE CHAR(18), CREATED_BY CHAR(8), CREATED_DATE DATE);")
+F.Intrinsic.Control.EndIf
+
+F.Data.Dictionary.CreateFromSQL("dicAcct","conx","select gl_account as Account, rtrim(gl_account) from v_gl_master order by gl_account")
+Gui.F_Acct.txtAcct.AddAutoCompleteItem("dicAcct","Dictionary")
+F.Data.Dictionary.Close("dicAcct")
+
+F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst","Select A.Account, B.Descr From GAB_6477_Acct A Left Join V_GL_Master B On A.Account = B.GL_Account")
+F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,False)
+	Gui.F_Acct.txtAcct.Text(V.ODBC.conx!rst.FieldVal!Account)
+	Gui.F_Acct.txtDesc.Text(V.ODBC.conx!rst.FieldVal!Descr)
+F.Intrinsic.Control.Else
+	Gui.F_Acct.txtAcct.Text("")
+F.Intrinsic.Control.EndIf
+F.ODBC.conx!rst.Close
+
+Gui.F_Acct..Show
+
+Program.Sub.Main.End
+
+Program.Sub.cmdBrowse_Click.Start
+V.Local.sTitles.Declare
+V.Local.iWidths.Declare
+V.Local.sRet.Declare
+
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+F.Intrinsic.String.Split("GL Account*!*GL Description","*!*",V.Local.sTitles)
+F.Intrinsic.String.Split("1600*!*4000","*!*",V.Local.iWidths)
+
+	F.Intrinsic.UI.SetBrowserHotTypeAhead(True)
+	F.Intrinsic.UI.Browser("Select an Account","conx","SELECT GL_Account, DESCR From GL_Master", V.Local.sTitles, V.Local.iWidths, 12500, 10000, V.Local.sRet)
+
+	F.Intrinsic.Control.If(V.Local.sRet,<>,"***CANCEL***")
+		F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+	
+		Gui.F_Acct.txtAcct.Text(V.Local.sRet(0).Trim)
+		Gui.F_Acct.txtDesc.Text(V.Local.sRet(1).Trim)
+		
+	F.Intrinsic.Control.EndIf
+Program.Sub.cmdBrowse_Click.End
+
+Program.Sub.cmdSave_Click.Start
+V.Local.sSQL.Declare
+
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+
+F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst","Select * From GAB_6477_Acct")
+F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,False)
+	F.Intrinsic.String.Build("update GAB_6477_ACCT set ACCOUNT = '{0}'",V.Screen.F_Acct!txtAcct.text,V.Local.sSQL)
+	F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+F.Intrinsic.Control.Else
+	F.Intrinsic.String.Build("insert into GAB_6477_ACCT(Account) values('{0}');",V.Screen.F_Acct!txtAcct.text ,V.Local.sSQL)
+	F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+F.Intrinsic.Control.EndIf
+F.ODBC.conx!rst.Close
+Program.Sub.cmdSave_Click.End
+
+Program.Sub.Unload.Start
+F.ODBC.Connection!conx.Close
+F.Intrinsic.Control.End
+Program.Sub.Unload.End
+
+Program.Sub.txtGLAcct_LostFocus.Start
+F.Intrinsic.Control.BlockEvents
+V.Local.sFilter.Declare
+V.Local.sLabel.Declare
+V.Local.sRet.Declare
+V.Local.sSQL.Declare
+
+F.Intrinsic.String.Build("SELECT GL_Account, DESCR From GL_Master where GL_ACCOUNT = '{0}'", V.Screen.F_Acct!txtAcct.text, V.Local.sSQL)
+F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst",V.Local.sSQL)
+F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,True)
+	'Gui.F_MiscCash.txt_GLAcct.Text("")
+	F.Intrinsic.UI.Msgbox("Invalid cash account")
+	F.Intrinsic.Control.CallSub(cmdbrowse_click)
+F.Intrinsic.Control.Else
+	Gui.F_Acct.txtAcct.Text(V.ODBC.conx!rst.FieldVal!GL_Account)
+	Gui.F_Acct.txtDesc.Text(V.ODBC.conx!rst.FieldVal!Descr)
+F.Intrinsic.Control.EndIf
+F.ODBC.conx!rst.Close
+F.Intrinsic.Control.UnBlockEvents
+Program.Sub.txtGLAcct_LostFocus.End
+
+Program.Sub.Comments.Start
+${$5$}$3.0.0.0$}$1
+${$6$}$dyunus$}$20211012135854504$}$xZ6SHi8g7O0Qsxe6AiO2NH3PnOKQRy0TlcmTOiL6/QWy+WcNUBOPX1Wt55HVZK06G/1LomO5mPc=
+Program.Sub.Comments.End
